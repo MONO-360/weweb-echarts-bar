@@ -1,0 +1,9 @@
+{
+  "name": "weweb-echarts-bar",
+  "version": "1.0.0",
+  "files": ["src", "ww-config.js"],
+  "dependencies": {
+    "echarts": "^5.4.0",
+    "vue-echarts": "^6.6.0"
+  }
+}
