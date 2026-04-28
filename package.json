@@ -1,7 +1,8 @@
 {
   "name": "weweb-echarts-bar",
   "version": "1.0.0",
-  "files": ["src", "ww-config.js"],
+  "main": "dist/weweb-echarts-bar.umd.js",
+  "files": ["src", "ww-config.js", "dist"],
   "scripts": {
     "build": "vite build"
   },
