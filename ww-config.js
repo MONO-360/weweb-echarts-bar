@@ -1,15 +1,6 @@
 export default {
   editor: {
-    label: { en: 'ECharts Bar Chart' },
-    icon: 'fontawesome/solid/chart-bar',
+    label: 'ECharts Bar Chart'
   },
-  properties: {
-    data: {
-      label: { en: 'Chart Data' },
-      type: 'Array',
-      section: 'settings',
-      bindable: true,
-      defaultValue: [],
-    }
-  }
+  properties: {}
 }
