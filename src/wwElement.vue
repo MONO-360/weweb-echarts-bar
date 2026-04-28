@@ -13,9 +13,12 @@ const props = defineProps({
 const chartRef = ref(null)
 let chart = null
 
-function renderChart(data) {
-  if (!chart || !data?.data) return
-  const rows = data.data
+function renderChart() {
+  if (!chart) return
+  // WeWeb View structure: content.data = { data: [...rows] }
+  const view = props.content?.data
+  const rows = Array.isArray(view) ? view : (view?.data || [])
+  if (!rows.length) return
   chart.setOption({
     tooltip: {},
     xAxis: { type: 'category', data: rows.map(r => r.portfolio_name) },
@@ -29,7 +32,7 @@ function renderChart(data) {
 
 onMounted(() => {
   chart = echarts.init(chartRef.value)
-  renderChart(props.content)
+  renderChart()
 })
 
 watch(() => props.content, renderChart, { deep: true })
