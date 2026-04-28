@@ -1,57 +1,42 @@
 <template>
-  <v-chart :option="option" autoresize style="height: 100%; width: 100%; min-height: 300px;" />
+  <div ref="chartEl" style="width: 100%; height: 400px;"></div>
 </template>
 
 <script setup>
-import { computed } from 'vue'
-import { use } from 'echarts/core'
-import { CanvasRenderer } from 'echarts/renderers'
-import { BarChart } from 'echarts/charts'
-import { GridComponent, TooltipComponent, LegendComponent } from 'echarts/components'
-import VChart from 'vue-echarts'
-
-use([CanvasRenderer, BarChart, GridComponent, TooltipComponent, LegendComponent])
+import { ref, onMounted, onUnmounted, watch } from 'vue'
+import * as echarts from 'echarts'
 
 const props = defineProps({
   content: { type: Object, default: () => ({}) }
 })
 
-const option = computed(() => ({
-  backgroundColor: 'transparent',
-  tooltip: {
-    trigger: 'axis',
-    axisPointer: { type: 'shadow' },
-    backgroundColor: '#1F2937',
-    borderColor: 'transparent',
-    textStyle: { color: '#F9FAFB', fontSize: 12 }
-  },
-  legend: { bottom: 0, textStyle: { color: '#6B7280', fontSize: 11 } },
-  grid: { left: 16, right: 16, top: 16, bottom: 48, containLabel: true },
-  xAxis: {
-    type: 'category',
-    data: (props.content.data || []).map(r => r.portfolio_name),
-    axisLabel: { color: '#9CA3AF', fontSize: 10, rotate: 15 }
-  },
-  yAxis: {
-    type: 'value',
-    axisLabel: { color: '#9CA3AF', formatter: v => '€' + v + 'M' },
-    splitLine: { lineStyle: { color: '#F3F4F6' } }
-  },
-  series: [
-    {
-      name: 'Budget (€M)',
-      type: 'bar',
-      data: (props.content.data || []).map(r => r.total_budget_m),
-      itemStyle: { color: '#7C3AED', borderRadius: [4, 4, 0, 0] },
-      barMaxWidth: 32
-    },
-    {
-      name: 'Actual Spend (€M)',
-      type: 'bar',
-      data: (props.content.data || []).map(r => r.actual_spend_m),
-      itemStyle: { color: '#14B8A6', borderRadius: [4, 4, 0, 0] },
-      barMaxWidth: 32
-    }
-  ]
-}))
+const chartEl = ref(null)
+let chart = null
+
+onMounted(() => {
+  chart = echarts.init(chartEl.value)
+  renderChart()
+  window.addEventListener('resize', () => chart?.resize())
+})
+
+onUnmounted(() => {
+  chart?.dispose()
+})
+
+watch(() => props.content.data, renderChart, { deep: true })
+
+function renderChart() {
+  if (!chart) return
+  const data = props.content.data || []
+  chart.setOption({
+    tooltip: { trigger: 'axis' },
+    legend: { data: ['Budget', 'Actual'] },
+    xAxis: { type: 'category', data: data.map(d => d.portfolio_name || '') },
+    yAxis: { type: 'value' },
+    series: [
+      { name: 'Budget', type: 'bar', data: data.map(d => d.total_budget_m || 0), itemStyle: { color: '#7C3AED' } },
+      { name: 'Actual', type: 'bar', data: data.map(d => d.actual_spend_m || 0), itemStyle: { color: '#14B8A6' } }
+    ]
+  })
+}
 </script>
