@@ -1,17 +1,13 @@
 {
   "name": "weweb-echarts-bar",
   "version": "1.0.0",
-  "main": "dist/weweb-echarts-bar.umd.js",
-  "files": ["src", "ww-config.js", "dist"],
   "scripts": {
-    "build": "vite build"
+    "build": "weweb build"
   },
   "dependencies": {
     "echarts": "^5.4.0"
   },
   "devDependencies": {
-    "vite": "^4.4.0",
-    "@vitejs/plugin-vue": "^4.2.0",
-    "vue": "^3.3.0"
+    "@weweb/cli": "^3.8.13"
   }
 }
